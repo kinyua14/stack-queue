@@ -1,40 +1,159 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<CodeBlocks_project_file>
-	<FileVersion major="1" minor="6" />
-	<Project>
-		<Option title="queue" />
-		<Option pch_mode="2" />
-		<Option compiler="gcc" />
-		<Build>
-			<Target title="Debug">
-				<Option output="bin/Debug/queue" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj/Debug/" />
-				<Option type="1" />
-				<Option compiler="gcc" />
-				<Compiler>
-					<Add option="-g" />
-				</Compiler>
-			</Target>
-			<Target title="Release">
-				<Option output="bin/Release/queue" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj/Release/" />
-				<Option type="1" />
-				<Option compiler="gcc" />
-				<Compiler>
-					<Add option="-O2" />
-				</Compiler>
-				<Linker>
-					<Add option="-s" />
-				</Linker>
-			</Target>
-		</Build>
-		<Compiler>
-			<Add option="-Wall" />
-			<Add option="-fexceptions" />
-		</Compiler>
-		<Unit filename="main.cpp" />
-		<Extensions>
-			<lib_finder disable_auto="1" />
-		</Extensions>
-	</Project>
-</CodeBlocks_project_file>
+#include <iostream>
+using namespace std;
+
+// Node structure for linked list implementation
+struct Node {
+    int data;
+    Node* next;
+};
+
+// Queue class for array implementation
+class QueueArray {
+private:
+    int front, rear, capacity;
+    int* arr;
+public:
+    QueueArray(int size) {
+        capacity = size;
+        front = rear = -1;
+        arr = new int[capacity];
+    }
+
+    void enqueue(int x) {
+        if (rear == capacity - 1) {
+            cout << "Queue Overflow" << endl;
+            return;
+        }
+        if (front == -1) {
+            front = 0;
+        }
+        arr[++rear] = x;
+    }
+
+    int dequeue() {
+        if (front == -1) {
+            cout << "Queue Underflow" << endl;
+            return -1;
+        }
+        int data = arr[front];
+        if (front == rear) {
+            front = rear = -1;
+        } else {
+            front++;
+        }
+        return data;
+    }
+
+    int peek() {
+        if (front == -1) {
+            cout << "Queue is Empty" << endl;
+            return -1;
+        }
+        return arr[front];
+    }
+
+    bool isEmpty() {
+        return (front == -1);
+    }
+
+    void display() {
+        if (front == -1) {
+            cout << "Queue is Empty" << endl;
+            return;
+        }
+        cout << "Queue elements are:";
+        for (int i = front; i <= rear; i++) {
+            cout << arr[i] << " ";
+        }
+        cout << endl;
+    }
+};
+
+// Queue class for linked list implementation
+class QueueLinkedList {
+private:
+    Node* front;
+    Node* rear;
+public:
+    QueueLinkedList() {
+        front = rear = nullptr;
+    }
+
+    void enqueue(int x) {
+        Node* newNode = new Node();
+        newNode->data = x;
+        newNode->next = nullptr;
+        if (rear == nullptr) {
+            front = rear = newNode;
+        } else {
+            rear->next = newNode;
+            rear = newNode;
+        }
+    }
+
+    int dequeue() {
+        if (front == nullptr) {
+            cout << "Queue Underflow" << endl;
+            return -1;
+        }
+        int data = front->data;
+        Node* temp = front;
+        if (front == rear) {
+            front = rear = nullptr;
+        } else {
+            front = front->next;
+        }
+        delete temp;
+        return data;
+    }
+
+    int peek() {
+        if (front == nullptr) {
+            cout << "Queue is Empty" << endl;
+            return -1;
+        }
+        return front->data;
+    }
+
+    bool isEmpty() {
+        return (front == nullptr);
+    }
+
+    void display() {
+        if (front == nullptr) {
+            cout << "Queue is Empty" << endl;
+            return;
+        }
+        cout << "Queue elements are:";
+        Node* temp = front;
+        while (temp != nullptr) {
+            cout << temp->data << " ";
+            temp = temp->next;
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    QueueArray queueArray(5);
+    QueueLinkedList queueLinkedList;
+
+    // Array implementation
+    queueArray.enqueue(1);
+    queueArray.enqueue(2);
+    queueArray.enqueue(3);
+    queueArray.display();
+    cout << "Dequeued element from array queue: " << queueArray.dequeue() << endl;
+    queueArray.display();
+
+    // Linked list implementation
+    queueLinkedList.enqueue(11);
+    queueLinkedList.enqueue(12);
+    queueLinkedList.enqueue(13);
+    queueLinkedList.display();
+    cout << "Dequeued element from linked list queue: " << queueLinkedList.dequeue() << endl;
+    queueLinkedList.display();
+
+    return 0;
+}
+
